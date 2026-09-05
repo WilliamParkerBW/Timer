@@ -25,6 +25,7 @@
       height: 100vh;
       width: 100vw;
       overflow: hidden;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
     a.widget-btn {
       display: flex;
@@ -41,11 +42,12 @@
       font-weight: 700;
       letter-spacing: -0.5px;
       line-height: 1;
+      color: #FFFFFF;
     }
     .bar-container {
       width: 82%;
       height: 6px;
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.35);
       border-radius: 3px;
       margin-top: 6px;
       overflow: hidden;
@@ -60,36 +62,49 @@
 </head>
 <body>
 
-  <!-- Tap anywhere on the Lock Screen widget to force an instant percentage recalculation -->
   <a class="widget-btn" href="#refresh">
-    <div class="percent" id="display">0%</div>
+    <div class="percent" id="display">--%</div>
     <div class="bar-container">
       <div class="bar-fill" id="fill"></div>
     </div>
   </a>
 
   <script>
-    const now = new Date();
+    function updateProgress() {
+      const now = new Date();
 
-    // 10:00 AM (Today) -> 4:00 PM / 16:00 (Today)
-    const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0).getTime();
-    const endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 0, 0).getTime();
-    const currentTime = now.getTime();
+      // Set target to today 10:00 AM (start) and 4:00 PM / 16:00 (end)
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0).getTime();
+      const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 0, 0).getTime();
+      const current = now.getTime();
 
-    let percent = 0;
-    if (currentTime <= startTime) {
-      percent = 0;
-    } else if (currentTime >= endTime) {
-      percent = 100;
-    } else {
-      percent = Math.min(100, Math.max(0, Math.round(((currentTime - startTime) / (endTime - startTime)) * 100)));
+      let pct = 0;
+      if (current <= start) {
+        pct = 0;
+      } else if (current >= end) {
+        pct = 100;
+      } else {
+        pct = Math.min(100, Math.max(0, Math.round(((current - start) / (end - start)) * 100)));
+      }
+
+      const displayEl = document.getElementById("display");
+      const fillEl = document.getElementById("fill");
+
+      if (displayEl && fillEl) {
+        displayEl.innerText = pct + "%";
+        fillEl.style.width = pct + "%";
+      }
     }
 
-    document.getElementById("display").innerText = percent + "%";
-    document.getElementById("fill").style.width = percent + "%";
+    // Run immediately when DOM is ready
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", updateProgress);
+    } else {
+      updateProgress();
+    }
 
     function __wweb2JsWidgetTitle() {
-      return "10 AM - 4 PM Progress";
+      return "10 AM - 4 PM Timer";
     }
   </script>
 </body>
