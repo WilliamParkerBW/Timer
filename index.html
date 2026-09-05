@@ -17,6 +17,7 @@
     }
     html, body {
       background: transparent !important;
+      background-color: transparent !important;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", sans-serif;
       display: flex;
       align-items: center;
@@ -29,6 +30,7 @@
       position: relative;
       width: 100vmin;
       height: 100vmin;
+      background: transparent !important;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -44,20 +46,20 @@
       height: 100%;
       transform: rotate(-90deg);
     }
+    /* iOS vibrant mode maps pure white to 100% tint and 0.25 opacity to subtle translucent tint */
     .track {
       fill: none;
       stroke: rgba(255, 255, 255, 0.25);
-      stroke-width: 9;
+      stroke-width: 10;
     }
     .progress {
       fill: none;
-      stroke: #4deeea;
-      stroke-width: 9;
+      stroke: #FFFFFF;
+      stroke-width: 10;
       stroke-linecap: round;
       stroke-dasharray: 283;
       stroke-dashoffset: 283;
       transition: stroke-dashoffset 0.4s ease;
-      filter: drop-shadow(0 0 6px rgba(77, 238, 234, 0.7));
     }
     .content {
       position: relative;
@@ -74,27 +76,24 @@
       line-height: 0.9;
     }
     .percent {
-      font-size: 26vmin;
+      font-size: 28vmin;
       font-weight: 800;
       color: #FFFFFF;
       letter-spacing: -1px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
     }
     .percent-symbol {
       font-size: 13vmin;
       font-weight: 700;
-      color: #4deeea;
+      color: #FFFFFF;
       margin-left: 2px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
     }
     .label {
       font-size: 9vmin;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: rgba(255, 255, 255, 0.85);
-      margin-top: 4px;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 3px;
     }
   </style>
 </head>
@@ -136,7 +135,6 @@
 
       if (displayEl && ringEl) {
         displayEl.innerText = pct;
-        // Circumference: 2 * Math.PI * 45 ≈ 282.74
         const circumference = 282.74;
         const offset = circumference - (pct / 100) * circumference;
         ringEl.style.strokeDashoffset = offset;
