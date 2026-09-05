@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <style>
     :root {
-      --wweb2-overlay-btn-disabled: false;
+      /* Hides Widget Web overlay bar and disables tinted buttons */
+      --wweb2-overlay-btn-disabled: true;
       --wweb2-overlay-btn-color: transparent;
     }
     * {
@@ -15,65 +16,112 @@
       user-select: none;
       -webkit-user-select: none;
     }
-    body {
-      background: transparent;
-      color: #FFFFFF;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Text", sans-serif;
+    html, body {
+      background: transparent !important;
+      background-color: transparent !important;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
       width: 100vw;
       overflow: hidden;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
-    a.widget-btn {
+    .widget-container {
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      color: inherit;
-      width: 100%;
-      height: 100%;
+      padding: 8px 12px;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      width: 90%;
+      margin-bottom: 2px;
+    }
+    .label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #FFFFFF;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 8px rgba(0, 0, 0, 0.6);
+    }
+    .time-range {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.2px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 8px rgba(0, 0, 0, 0.6);
+    }
+    .percent-container {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      margin: 2px 0 6px 0;
     }
     .percent {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -1px;
       line-height: 1;
       color: #FFFFFF;
+      /* Heavy drop shadow prevents text from washing out over light wallpaper elements */
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85), 0 0 14px rgba(0, 0, 0, 0.6);
     }
-    .bar-container {
-      width: 82%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.35);
-      border-radius: 3px;
-      margin-top: 6px;
+    .percent-symbol {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #4deeea;
+      margin-left: 2px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85), 0 0 12px rgba(77, 238, 234, 0.6);
+    }
+    .track {
+      width: 88%;
+      height: 7px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
       overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
-    .bar-fill {
+    .fill {
       height: 100%;
-      background: #FFFFFF;
+      background: linear-gradient(90deg, #38ef7d, #4deeea);
       width: 0%;
-      border-radius: 3px;
+      border-radius: 4px;
+      box-shadow: 0 0 8px rgba(77, 238, 234, 0.8);
+      transition: width 0.3s ease;
     }
   </style>
 </head>
 <body>
 
-  <a class="widget-btn" href="#refresh">
-    <div class="percent" id="display">--%</div>
-    <div class="bar-container">
-      <div class="bar-fill" id="fill"></div>
+  <a class="widget-container" href="#refresh">
+    <div class="header-row">
+      <span class="label">Shift</span>
+      <span class="time-range">10A – 4P</span>
+    </div>
+
+    <div class="percent-container">
+      <span class="percent" id="display">0</span>
+      <span class="percent-symbol">%</span>
+    </div>
+
+    <div class="track">
+      <div class="fill" id="fill"></div>
     </div>
   </a>
 
   <script>
     function updateProgress() {
       const now = new Date();
-
-      // Set target to today 10:00 AM (start) and 4:00 PM / 16:00 (end)
       const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0).getTime();
       const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 0, 0).getTime();
       const current = now.getTime();
@@ -91,12 +139,11 @@
       const fillEl = document.getElementById("fill");
 
       if (displayEl && fillEl) {
-        displayEl.innerText = pct + "%";
+        displayEl.innerText = pct;
         fillEl.style.width = pct + "%";
       }
     }
 
-    // Run immediately when DOM is ready
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", updateProgress);
     } else {
@@ -104,7 +151,7 @@
     }
 
     function __wweb2JsWidgetTitle() {
-      return "10 AM - 4 PM Timer";
+      return "Timer Progress";
     }
   </script>
 </body>
