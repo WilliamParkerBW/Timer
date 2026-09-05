@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <style>
     :root {
-      /* Hides Widget Web overlay bar and disables tinted buttons */
       --wweb2-overlay-btn-disabled: true;
       --wweb2-overlay-btn-color: transparent;
     }
@@ -18,7 +17,6 @@
     }
     html, body {
       background: transparent !important;
-      background-color: transparent !important;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", sans-serif;
       display: flex;
       align-items: center;
@@ -27,95 +25,93 @@
       width: 100vw;
       overflow: hidden;
     }
-    .widget-container {
-      width: 100%;
-      height: 100%;
-      background: transparent !important;
+    a.circle-widget {
+      position: relative;
+      width: 100vmin;
+      height: 100vmin;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      padding: 8px 12px;
+      color: inherit;
     }
-    .header-row {
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.25);
+      stroke-width: 9;
+    }
+    .progress {
+      fill: none;
+      stroke: #4deeea;
+      stroke-width: 9;
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.4s ease;
+      filter: drop-shadow(0 0 6px rgba(77, 238, 234, 0.7));
+    }
+    .content {
+      position: relative;
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      width: 90%;
-      margin-bottom: 2px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
     }
-    .label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #FFFFFF;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 8px rgba(0, 0, 0, 0.6);
-    }
-    .time-range {
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
-      letter-spacing: 0.2px;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 8px rgba(0, 0, 0, 0.6);
-    }
-    .percent-container {
+    .percent-row {
       display: flex;
       align-items: baseline;
       justify-content: center;
-      margin: 2px 0 6px 0;
+      line-height: 0.9;
     }
     .percent {
-      font-size: 3rem;
+      font-size: 26vmin;
       font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1;
       color: #FFFFFF;
-      /* Heavy drop shadow prevents text from washing out over light wallpaper elements */
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85), 0 0 14px rgba(0, 0, 0, 0.6);
+      letter-spacing: -1px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
     }
     .percent-symbol {
-      font-size: 1.35rem;
+      font-size: 13vmin;
       font-weight: 700;
       color: #4deeea;
       margin-left: 2px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85), 0 0 12px rgba(77, 238, 234, 0.6);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
     }
-    .track {
-      width: 88%;
-      height: 7px;
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 4px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    .fill {
-      height: 100%;
-      background: linear-gradient(90deg, #38ef7d, #4deeea);
-      width: 0%;
-      border-radius: 4px;
-      box-shadow: 0 0 8px rgba(77, 238, 234, 0.8);
-      transition: width 0.3s ease;
+    .label {
+      font-size: 9vmin;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 4px;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
     }
   </style>
 </head>
 <body>
 
-  <a class="widget-container" href="#refresh">
-    <div class="header-row">
+  <a class="circle-widget" href="#refresh">
+    <svg viewBox="0 0 100 100">
+      <circle class="track" cx="50" cy="50" r="45"></circle>
+      <circle class="progress" id="ring" cx="50" cy="50" r="45"></circle>
+    </svg>
+
+    <div class="content">
+      <div class="percent-row">
+        <span class="percent" id="display">0</span>
+        <span class="percent-symbol">%</span>
+      </div>
       <span class="label">Shift</span>
-      <span class="time-range">10A – 4P</span>
-    </div>
-
-    <div class="percent-container">
-      <span class="percent" id="display">0</span>
-      <span class="percent-symbol">%</span>
-    </div>
-
-    <div class="track">
-      <div class="fill" id="fill"></div>
     </div>
   </a>
 
@@ -136,11 +132,14 @@
       }
 
       const displayEl = document.getElementById("display");
-      const fillEl = document.getElementById("fill");
+      const ringEl = document.getElementById("ring");
 
-      if (displayEl && fillEl) {
+      if (displayEl && ringEl) {
         displayEl.innerText = pct;
-        fillEl.style.width = pct + "%";
+        // Circumference: 2 * Math.PI * 45 ≈ 282.74
+        const circumference = 282.74;
+        const offset = circumference - (pct / 100) * circumference;
+        ringEl.style.strokeDashoffset = offset;
       }
     }
 
