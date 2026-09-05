@@ -18,18 +18,18 @@
     html, body {
       background: transparent !important;
       background-color: transparent !important;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", sans-serif;
+      width: 100vw;
+      height: 100vw; /* Locks viewport strictly to a 1:1 aspect ratio */
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", sans-serif;
     }
     a.circle-widget {
       position: relative;
-      width: 100vmin;
-      height: 100vmin;
+      width: 100%;
+      height: 100%;
       background: transparent !important;
       display: flex;
       flex-direction: column;
@@ -46,7 +46,6 @@
       height: 100%;
       transform: rotate(-90deg);
     }
-    /* iOS vibrant mode maps pure white to 100% tint and 0.25 opacity to subtle translucent tint */
     .track {
       fill: none;
       stroke: rgba(255, 255, 255, 0.25);
@@ -76,19 +75,19 @@
       line-height: 0.9;
     }
     .percent {
-      font-size: 28vmin;
+      font-size: 28vw;
       font-weight: 800;
       color: #FFFFFF;
       letter-spacing: -1px;
     }
     .percent-symbol {
-      font-size: 13vmin;
+      font-size: 13vw;
       font-weight: 700;
       color: #FFFFFF;
       margin-left: 2px;
     }
     .label {
-      font-size: 9vmin;
+      font-size: 9vw;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
